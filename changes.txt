@@ -1,0 +1,5 @@
+I removed parsing the text field into a dictionary, along with the dictionary in Detail.  From my samples BAI2 files, there is not a good consistent way to parse key value pairs, as they may wrap onto other lines, a single line may have more than one pair, and the key and the value are not restricted in using spaces, tabs, or other delimiters, so this functionality is not reliable.
+I updated LeftoverStackToString to restore comma delimiters that can exist in the text field and were lost during parsing and printing.
+Rather than being tied to using a filename, I changed the Parse method to pass a stream or the contents of the BAI2 file.
+
+Kristopher Groble

@@ -7,12 +7,27 @@ namespace BankFileParsers
 {
     public class BaiParser
     {
-        private string[] _data;
+        private List<string> _data;
 
-        public BaiFile Parse(string fileName)
+        public BaiFile Parse(Stream stream)
         {
-            if (!File.Exists(fileName)) throw new Exception("File not found, nothing to parse");
-            _data = File.ReadAllLines(fileName);
+            _data = new List<string>();
+
+            using (var reader = new StreamReader(stream))
+            {
+                while (!reader.EndOfStream)
+                {
+                    _data.Add(reader.ReadLine());
+                }
+            }
+
+            return _Parse();
+        }
+
+        public BaiFile Parse(string dataString)
+        {
+            _data = dataString.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
+
             return _Parse();
         }
 
@@ -57,7 +72,7 @@ namespace BankFileParsers
                 var line = data.value;
                 if (data.index == 0 && line.StartsWith("01"))
                     bai.FileHeader = line;
-                else if (data.index == _data.Length -1  && line.StartsWith("99"))
+                else if (data.index == _data.Count - 1 && line.StartsWith("99"))
                     bai.FileTrailer = line;
 
                 else if (line.StartsWith("02"))

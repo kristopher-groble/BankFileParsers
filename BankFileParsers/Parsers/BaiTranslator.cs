@@ -156,9 +156,8 @@ namespace BankFileParsers
         /// Returns a List of DetailSummary
         /// </summary>
         /// <param name="data">The translated BAI object</param>
-        /// <param name="dictionaryKeys">Any Keys in the Detail.TextDictionary (if any) you would like to export</param>
         /// <returns>A List of DetailSummary</returns>
-        public static List<DetailSummary> GetDetailInformation(TranslatedBaiFile data, List<string> dictionaryKeys)
+        public static List<DetailSummary> GetDetailInformation(TranslatedBaiFile data)
         {
             var ret = new List<DetailSummary>();
             foreach (var group in data.Groups)
@@ -168,18 +167,6 @@ namespace BankFileParsers
                     foreach (var detail in account.Details)
                     {
                         var detailType = BaiFileHelpers.GetTransactionDetail(detail.TypeCode);
-                        var textDictionary = new Dictionary<string, string>();
-
-                        if (dictionaryKeys != null)
-                        {
-                            foreach (var key in dictionaryKeys)
-                            {
-                                if (detail.TextDictionary.ContainsKey(key))
-                                {
-                                    textDictionary.Add(key, detail.TextDictionary[key]);
-                                }
-                            }
-                        }
 
                         var ds = new DetailSummary()
                         {
@@ -194,8 +181,7 @@ namespace BankFileParsers
                             Text = detail.Text,
                             TypeCode = detailType.TypeCode,
                             TypeDescription = detailType.Description,
-                            FundType = detail.FundsType,
-                            TextDictionary = textDictionary
+                            FundType = detail.FundsType
                         };
 
                         // I don't want to return an optional, I want a blank string

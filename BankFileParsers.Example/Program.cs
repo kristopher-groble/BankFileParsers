@@ -21,10 +21,8 @@ namespace BankFileParsers.Example
             var dictionaryKeys = new List<string> { "PREAUTHORIZED ACH FROM", "ORIGINATOR ID", "ENTRY DESCRIPTION",
                 "PAYMENT ID", "RECEIVER INFORMATION", "ADDENDA INFORMATION" };
 
-            var detail = BaiTranslator.GetDetailInformation(trans, dictionaryKeys);
-            var detailDictionary = detail.Where(p => p.TextDictionary.Count > 0).ToList();
+            var detail = BaiTranslator.GetDetailInformation(trans);
             Console.WriteLine("Detail Count: " + detail.Count);
-            Console.WriteLine("Detail with Dictionary: " + detailDictionary.Count);
 
             // Verify that the parser works - do a diff with the imput file
             parser.Write(fileName + ".new", bai);

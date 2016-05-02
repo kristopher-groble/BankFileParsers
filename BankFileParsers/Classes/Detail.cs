@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BankFileParsers
 {
@@ -18,14 +19,9 @@ namespace BankFileParsers
         public string BankReferenceNumber { get; set; }
         public string CustomerReferenceNumber { get; set; }
         public string Text { get; set; }
-        public List<string> TextList { get; set; }
-        public Dictionary<string, string> TextDictionary { get; set; }
 
         public Detail(BaiDetail data, string currencyCode)
         {
-            TextList = new List<string>();
-            TextDictionary = new Dictionary<string, string>();
-
             var list = new List<string> { data.TransactionDetail };
             list.AddRange(data.DetailContinuation);
 
@@ -42,7 +38,7 @@ namespace BankFileParsers
                 }
                 else if (line.StartsWith("88"))
                 {
-                    line = line.Substring(2);//.Replace("/", " ");
+                    line = " " + line.Substring(2);//.Replace("/", " ");
                 }
                 else throw new Exception("I got a bad line: " + line);
                 lineData += line;
@@ -79,60 +75,20 @@ namespace BankFileParsers
             CustomerReferenceNumber = stack.Pop().ToString();
             // What's left on the stack?
             Text = LeftoverStackToString(stack);
-
-            CreateTextList();
-            CreateTextDictionary();
         }
 
         private string LeftoverStackToString(Stack stack)
         {
-            var ret = "";
+            StringBuilder ret = new StringBuilder();
             while (stack.Count > 0)
-                ret += stack.Pop().ToString();
-            return ret;
-        }
-
-        private void CreateTextList()
-        {
-            // Now fill up the List
-            var fields = Text.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var field in fields)
             {
-                if (TextList.Count > 0 && !field.Contains(":"))
+                ret.Append(stack.Pop().ToString());
+                if (stack.Count > 0)
                 {
-                    var text = TextList[TextList.Count - 1];
-                    if (text.EndsWith(":")) text += field;
-                    else text += " " + field;
-                    TextList[TextList.Count - 1] = text;
-                }
-                else
-                    TextList.Add(field);
-            }
-        }
-
-        private void CreateTextDictionary()
-        {
-            foreach (var item in TextList)
-            {
-                var parts = item.Split(':');
-                if (parts.Length != 2) continue;
-                if (!TextDictionary.ContainsKey(parts[0]))
-                {
-                    TextDictionary.Add(parts[0], parts[1]);
-                }
-                else
-                {
-                    try
-                    {
-                        // TODO - actually create a counter object in case there's a thrid one
-                        TextDictionary.Add(parts[0] + "2", parts[1]);
-                    }
-                    catch
-                    {
-                        // I'm doing this as a helper, makes no sense if it crashes
-                    }
+                    ret.Append(",");
                 }
             }
+            return ret.ToString();
         }
     }
 }
