@@ -30,7 +30,7 @@ namespace BankFileParsers
                     CustomerAccountNumber = fields[1];
                     CurrencyCode = fields[2];
                     var replaced = string.Format("{0},{1},{2},", fields[0], fields[1], fields[2]);
-                    line = line.Substring(replaced.Length);
+                    line = line.Length > replaced.Length ? line.Substring(replaced.Length) : String.Empty;
                 }
                 else if (line.StartsWith("88"))
                 {
