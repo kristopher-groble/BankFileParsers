@@ -35,7 +35,7 @@ namespace BankFileParsers
             GroupStatus = BaiFileHelpers.GetGroupStatus(fields[3]);
             AsOfDateTime = BaiFileHelpers.DateTimeFromFields(fields[4], fields[5]);
             CurrencyCode = BaiFileHelpers.GetCurrencyCode(fields[6]);
-            AsOfDateModifier = BaiFileHelpers.GetAsOfDateModifier(fields[7]);
+            AsOfDateModifier = BaiFileHelpers.GetAsOfDateModifier(fields[7].Replace("/", ""));
 
             foreach (var account in data.Accounts)
             {
