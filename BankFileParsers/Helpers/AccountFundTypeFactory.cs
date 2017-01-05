@@ -35,6 +35,13 @@ namespace BankFileParsers
                 else if (line.StartsWith("88"))
                 {
                     line = line.Substring(2);
+
+                    // Sometimes, the first status/summary info appears on an 88 line
+                    // and this was causing issues because of the leading comma.
+                    if (lineData.Length == 0)
+                    {
+                        line = line.TrimStart(',');
+                    }
                 }
                 else throw new Exception("I got a bad line: " + line);
                 lineData += line;
